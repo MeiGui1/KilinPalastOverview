@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Overview</title>
+  </head>
+  <body>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script >
+      const firebaseConfig = {
+        apiKey: "",
+        authDomain: "kilinpalast.firebaseapp.com",
+        projectId: "kilinpalast",
+        storageBucket: "kilinpalast.appspot.com",
+        messagingSenderId: "100177702336",
+        appId: "1:100177702336:web:803e4e74160c3314c12c25"
+      };
+      db = firebase.initializeApp(firebaseConfig).firestore();
+      db.collection("dishes")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data());
+        });
+      })
 
+    </script>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    
+  </body>
+</html>
