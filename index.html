@@ -12,9 +12,10 @@
     <h1>Bestellungen</h1>
     <div id="root"></div>
 
-
+    <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script crossorigin src="https://unpkg.com/@babel/standalone@7.15.5/babel.min.js"></script>
@@ -33,12 +34,23 @@
         };
         var db = firebase.initializeApp(firebaseConfig).firestore();
 
-        function OrderList(props) {
-            const items = props.orderList.map(
-                object => <li>{object.name}</li>
+        function Order(props) {
+            var { dishOrders, orderNumber, takeAway, totalPrice } = props.order;
+
+            const items = dishOrders.map(
+                order => {
+                    var { menuName, name } = order.dish;
+                    
+                    return (
+                    <div key={order.orderTime}>
+                        {menuName} {name} {order.price} CHF
+                    </div> )
+                }
             )
 
-            return items;
+            const total = <div>Total {totalPrice} CHF</div>;
+
+            return [ items, total ];
         }
 
         class App extends React.Component {
@@ -46,19 +58,20 @@
                 super(props)
 
                 this.state = {
-                    orderList: []
+                    order: {
+                        dishOrders: [],
+                        orderNumber: 0,
+                        takeAway: false,
+                        totalPrice: 0,
+                    }
                 }
             }
 
             componentDidMount() {
-                db.collection("dishes")
-                .onSnapshot((querySnapshot) => {
-                    var newItems = [];
-                    querySnapshot.forEach( doc => {
-                        newItems.push(doc.data())
-                    } );
+                db.collection("current_order").doc("0")
+                .onSnapshot((doc) => {
                     this.setState({
-                        orderList: newItems
+                        order: doc.data()
                     });
                 });
             }
@@ -66,7 +79,7 @@
             render() {
                 return (
                     <div>
-                        <OrderList orderList={this.state.orderList} />
+                        <Order order={this.state.order} />
                     </div>
                 )
             }
